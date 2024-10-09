@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="EN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fraction Calculator</title>
+    <link rel="stylesheet" href="src/main/Resources/FCalcuator.css"> <!-- If use in Intellij: Change to Relative Path -->
+</head>
+<body>
+
+<h1 class="Heading">Fraction Calculator</h1>
+
+<div class="Calculator">
+    <form id="calculateForm" class="IForm">
+        <div class="fractions-container">
+
+            <!--Some Heading-->
+            <div class="InnerHeading-Container">
+                <h2 class="InnerHeading">Enter Fractions</h2>
+            </div>
+
+            <div class="fraction">
+                <input type="text" id="L_First" name="L_First" placeholder="L1" required autocomplete="off">
+                <span class="fraction-bar"></span>
+                <input type="text" id="L_Second" name="L_Second" placeholder="L2" required autocomplete="off">
+            </div>
+
+            <div class="Center-Container">
+                <div class="fraction">
+                    <select name="FractionOperation" id="operation">
+                        <option value="add">+</option>
+                        <option value="subtract">-</option>
+                        <option value="multiply">⋅</option>
+                        <option value="divide">:</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="fraction">
+                <input type="text" id="R_First" name="R_First" placeholder="R1" required autocomplete="off">
+                <span class="fraction-bar"></span>
+                <input type="text" id="R_Second" name="R_Second" placeholder="R2" required autocomplete="off">
+            </div>
+
+            <div class="Center-Container">
+                <span class="equals">=</span>
+            </div>
+
+            <div class="fraction">
+                <input type="text" id="Result_First" name="Result_First" placeholder="RES1" readonly autocomplete="off">
+                <span class="fraction-bar"></span>
+                <input type="text" id="Result_Second" name="Result_Second" placeholder="RES2" readonly autocomplete="off">
+            </div>
+
+        </div>
+
+        <div class="Button-Container">
+            <button type="submit" id="B_Calculate" onclick="submitCalculation()" class="Calculate">Calculate</button>
+            <button type="submit" id="B_Reset" class="Reset">Reset</button>
+            <!--
+            <button type="submit" id="B_ShowCalc" class="ShowCalc">Show Calculation</button>-->
+        </div>
+
+        <!--
+        <div class="Calculaton-Details" id="CalcDetails">
+            <p>Calculation Details...</p>
+
+            <p>2/7 + 3/8 = 37/56</p>
+        </div>-->
+
+    </form>
+</div>
+
+<script>
+    function submitCalculation(event) {
+        // Prevent the form from submitting and reloading the page
+        event.preventDefault();
+
+        // Get values from input fields
+        const L1 = document.getElementById("L_First").value;
+        const L2 = document.getElementById("L_Second").value;
+        const R1 = document.getElementById("R_First").value;
+        const R2 = document.getElementById("R_Second").value;
+        const operation = document.getElementById("operation").value;
+
+        // Send the data to the server
+        fetch('/calculate', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ L1, L2, R1, R2, operation })
+        })
+        .then(response => response.json())
+        .then(data => {
+            // Display the result in the corresponding fields
+            document.getElementById("Result_First").value = data.result1;
+            document.getElementById("Result_Second").value = data.result2;
+        })
+        .catch(error => console.error('Error:', error));
+    }
+
+    function resetFields(event) {
+        // Prevent the form from submitting and reloading the page
+        event.preventDefault();
+
+        // Clear all input fields
+        document.getElementById("L_First").value = '';
+        document.getElementById("L_Second").value = '';
+        document.getElementById("R_First").value = '';
+        document.getElementById("R_Second").value = '';
+        document.getElementById("Result_First").value = '';
+        document.getElementById("Result_Second").value = '';
+    }
+
+    // Attach the submitCalculation function to the form's submit event
+    document.getElementById("calculateForm").addEventListener("submit", submitCalculation);
+
+    // Attach the resetFields function to the Reset button's click event
+    document.getElementById("B_Reset").addEventListener("click", resetFields);
+</script>
+
+</body>
+</html>
