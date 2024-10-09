@@ -1,16 +1,32 @@
 document.addEventListener("DOMContentLoaded", function() {
-    function submitCalculation(event) {
-        // Prevent the form from submitting and reloading the page
-        event.preventDefault();
+    function showInfoBox(title, message, isError = false) {
+        const infoBox = document.getElementById("infoBox");
+        const infoBoxTitle = document.getElementById("infoBoxTitle");
+        const infoBoxMessage = document.getElementById("infoBoxMessage");
 
-        // Get values from input fields
+        infoBoxTitle.textContent = title;
+        infoBoxMessage.textContent = message;
+
+        if (isError) {
+            infoBox.classList.add("error");
+        } else {
+            infoBox.classList.remove("error");
+        }
+
+        infoBox.style.display = "block";
+        setTimeout(() => {
+            infoBox.style.display = "none";
+        }, 3000); // Hide after 3 seconds
+    }
+
+    function submitCalculation(event) {
+        event.preventDefault();
         const L1 = document.getElementById("L_First").value;
         const L2 = document.getElementById("L_Second").value;
         const R1 = document.getElementById("R_First").value;
         const R2 = document.getElementById("R_Second").value;
         const operation = document.getElementById("operation").value;
 
-        // Send the data to the server
         fetch('/calculate', {
             method: 'POST',
             headers: {
@@ -20,31 +36,27 @@ document.addEventListener("DOMContentLoaded", function() {
         })
         .then(response => response.json())
         .then(data => {
-            // Display the result in the corresponding fields
             document.getElementById("Result_First").value = data.result1;
             document.getElementById("Result_Second").value = data.result2;
+            showInfoBox(data.title, data.message, data.title === "Error");
         })
-        .catch(error => console.error('Error:', error));
+        .catch(error => {
+            console.error('Error:', error);
+            showInfoBox("Error", "An error occurred during calculation.", true);
+        });
     }
 
     function resetFields(event) {
-        // Prevent the form from submitting and reloading the page
         event.preventDefault();
-
-        // Clear all input fields
         document.getElementById("L_First").value = '';
         document.getElementById("L_Second").value = '';
         document.getElementById("R_First").value = '';
         document.getElementById("R_Second").value = '';
         document.getElementById("Result_First").value = '';
         document.getElementById("Result_Second").value = '';
-        // Print out something
-        console.log("Fields reset");
+        showInfoBox("Reset", "Fields have been reset.");
     }
 
-    // Attach the submitCalculation function to the form's submit event
     document.getElementById("calculateForm").addEventListener("submit", submitCalculation);
-
-    // Attach the resetFields function to the Reset button's click event
     document.getElementById("B_Reset").addEventListener("reset", resetFields);
 });

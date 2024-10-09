@@ -27,26 +27,42 @@ public class CalculateHandler implements HttpHandler {
             Fraction b1 = new Fraction(L1, L2);
             Fraction b2 = new Fraction(R1, R2);
             Fraction result = null;
+            String title = "Calculation Result";
+            String message = "";
 
-            switch (operator) {
-                case "add":
-                    result = b1.addieren(b2);
-                    break;
-                case "subtract":
-                    result = b1.subtrahieren(b2);
-                    break;
-                case "multiply":
-                    result = b1.multiplizieren(b2);
-                    break;
-                case "divide":
-                    result = b1.dividieren(b2);
-                    break;
-            }
+            try {
+                switch (operator) {
+                    case "add":
+                        result = b1.addieren(b2);
+                        message = "Addition successful!";
+                        break;
+                    case "subtract":
+                        result = b1.subtrahieren(b2);
+                        message = "Subtraction successful!";
+                        break;
+                    case "multiply":
+                        result = b1.multiplizieren(b2);
+                        message = "Multiplication successful!";
+                        break;
+                    case "divide":
+                        result = b1.dividieren(b2);
+                        message = "Division successful!";
+                        break;
+                }
+                if (result == null || !result.isValid()) {
+                    throw new ArithmeticException("Invalid operation");
+                }
+            }catch(ArithmeticException e) {
+                    title = "Error";
+                    message = e.getMessage(); // Get the exception message from ArithmeticException
+                }
 
             // Create JSON response
             JSONObject responseJson = new JSONObject();
-            responseJson.put("result1", result.Zähler);
-            responseJson.put("result2", result.Nenner);
+            responseJson.put("result1", result != null ? result.Zähler : ""); // If result is null, return empty string
+            responseJson.put("result2", result != null ? result.Nenner : "");
+            responseJson.put("title", title);
+            responseJson.put("message", message);
 
             // Send response
             String response = responseJson.toString();

@@ -172,4 +172,32 @@ body {
     background-color: #0b7dda;
 }
 
-/*  */
+/* InfoBox */
+
+.info-box {
+    display: none; /* Initially hidden */
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+}
+
+.info-box-title {
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 5px;
+}
+
+.info-box-message {
+    text-align: center;
+}
+
+.info-box.error {
+    background-color: #f44336; /* Red background for errors */
+}

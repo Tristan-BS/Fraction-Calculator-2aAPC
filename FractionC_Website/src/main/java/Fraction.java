@@ -52,4 +52,8 @@ public class Fraction {
         int neuerNenner = this.Nenner * b2.Zähler;
         return new Fraction(neuerZähler, neuerNenner);
     }
+
+    public boolean isValid() {
+        return Nenner != 0;
+    }
 }
