@@ -18,6 +18,7 @@ public class Main {
         HttpServer server = HttpServer.create(new InetSocketAddress(3000), 0);
         server.createContext("/", new MyHandler());
         server.createContext("/src/main/Resources/", new StaticFileHandler());
+        server.createContext("/src/main/Javascript/", new StaticFileHandler());
         server.createContext("/calculate", new CalculateHandler());
         server.setExecutor(null);
         server.start();
